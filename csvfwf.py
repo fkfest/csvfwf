@@ -2,47 +2,51 @@
 
 import sys
 from sys import stdout, argv, stderr
-import pandas
+import csv
 
 #default delimiter
-delimiter=","
+delimiter = ","
+#default delimiter for input files
+inpdelim = ","
 
-def RemovePandasNan(val):
-  """resets values set by pandas to empty space again"""
-  if val.startswith("Unnamed:") or val == "nan":
-    val = ""
-  return val
-
-def FixWidth(df):
-  """generate a table with fixed width columns"""
-  cols = df.columns
-  vals = df.values
+def GetTable(CSVFile):
+  """read csv to a table"""
   table = []
-  for icol in range(len(cols)):
-    col = cols[icol].strip()
-    col=RemovePandasNan(col)
+  with open(CSVFile, newline='') as csvfile:
+    csvobj = csv.reader(csvfile)
+    for row in csvobj:
+      print(row)    
+      table.append(row)
+  return table
+
+def FixWidth(vals):
+  """generate a table with fixed width columns"""
+  table1 = []
+  for icol in range(len(vals[0])):
     #find the optimal width for each column
-    maxlen=len(col)
+    maxlen=0
     for irow in range(len(vals)):
       val=str(vals[irow][icol])
       val=val.strip()
-      val=RemovePandasNan(val)
+      if delimiter in val:
+        #add quotes
+        val='"'+val+'"' 
       vals[irow][icol]=val
       itlen=len(val)
       if itlen > maxlen:
         maxlen = itlen
     maxlen += 1
     fcol=[]
-    fcol.append('{:>{}}'.format(col,maxlen))
     for irow in range(len(vals)):
       fcol.append('{:>{}}'.format(vals[irow][icol],maxlen))
-    table.append(fcol)
-  return table
+    table1.append(fcol)
+  #transpose the table
+  return [list(i) for i in zip(*table1)]
 
 def PrintTable(table):
-  for irow in range(len(table[0])):
-    for icol in range(len(table)):
-      print(table[icol][irow],delimiter,end="",sep="")
+  for irow in range(len(table)):
+    for icol in range(len(table[0])):
+      print(table[irow][icol],delimiter,end="",sep="")
     print()
 
 ArgsLoop = iter(sys.argv[1:]) 
@@ -55,7 +59,7 @@ for Arg in ArgsLoop:
       print("option "+Arg+" not known") 
   else:
     CSVFile = Arg
-    df = pandas.read_csv(CSVFile)
-    table = FixWidth(df)
+    table = GetTable(CSVFile)
+    table = FixWidth(table)
     PrintTable(table)
 
