@@ -15,9 +15,16 @@ def GetTable(CSVFile):
   with open(CSVFile, newline='') as csvfile:
     csvobj = csv.reader(csvfile)
     for row in csvobj:
-      print(row)    
       table.append(row)
   return table
+
+def OnlyEntry(row,icol):
+  # check, if it's the only entry in the row - then don't count it
+  for icolx in range(len(row)):
+    if icolx != icol:
+      if str(row[icolx]).strip():
+        return False
+  return True
 
 def FixWidth(vals):
   """generate a table with fixed width columns"""
@@ -34,7 +41,8 @@ def FixWidth(vals):
       vals[irow][icol]=val
       itlen=len(val)
       if itlen > maxlen:
-        maxlen = itlen
+        if not OnlyEntry(vals[irow],icol):
+          maxlen = itlen
     maxlen += 1
     fcol=[]
     for irow in range(len(vals)):
