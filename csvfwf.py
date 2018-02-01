@@ -19,7 +19,7 @@ def GetTable(CSVFile):
   return table
 
 def OnlyEntry(row,icol):
-  # check, if it's the only entry in the row - then don't count it
+  """check, if it's the only entry in the row"""
   for icolx in range(len(row)):
     if icolx != icol:
       if str(row[icolx]).strip():
@@ -29,6 +29,7 @@ def OnlyEntry(row,icol):
 def FixWidth(vals):
   """generate a table with fixed width columns"""
   table1 = []
+  offsrow = [0] * len(vals)
   for icol in range(len(vals[0])):
     #find the optimal width for each column
     maxlen=0
@@ -41,12 +42,23 @@ def FixWidth(vals):
       vals[irow][icol]=val
       itlen=len(val)
       if itlen > maxlen:
+        #don't count single entries in the row
         if not OnlyEntry(vals[irow],icol):
           maxlen = itlen
     maxlen += 1
     fcol=[]
     for irow in range(len(vals)):
-      fcol.append('{:>{}}'.format(vals[irow][icol],maxlen))
+      rowwidth = maxlen
+      if offsrow[irow] > 0:
+        if offsrow[irow] < maxlen:
+          rowwidth = maxlen - offsrow[irow]
+        else:
+          rowwidth = 0
+        offsrow[irow] -= maxlen - rowwidth
+      fcol.append('{:>{}}'.format(vals[irow][icol],rowwidth))
+      itlen = len(vals[irow][icol])
+      if itlen > maxlen:
+        offsrow[irow] = itlen - maxlen;
     table1.append(fcol)
   #transpose the table
   return [list(i) for i in zip(*table1)]
