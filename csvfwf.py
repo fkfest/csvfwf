@@ -26,19 +26,22 @@ def OnlyEntry(row,icol):
         return False
   return True
 
-def NextColumnDense(vals,icol):
-  """check if the next column is dense (e.g., >50% of elements non empty)"""
+def NextColumnDense(vals,icol,extlast):
+  """check if the next column is dense (e.g., >30% of elements non empty)"""
+  if icol+1 >= len(vals[0]):
+    return extlast
   nval=0
   for irow in range(len(vals)):
-    if str(vals[irow][icol]).strip():
+    if str(vals[irow][icol+1]).strip():
       nval += 1
-  return (nval/len(vals)>0.5)
+  return (nval/len(vals)>0.3)
 
-def CanExtend(row,icol):
+def CanExtend(row,icol,extlast):
   """check if the next element in the row is empty"""
-  if icol+1 < len(row):
-    if not str(row[icol+1]).strip():
-      return True
+  if icol+1 >= len(row):
+    return extlast
+  if not str(row[icol+1]).strip():
+    return True
   return False
 
 
@@ -61,7 +64,7 @@ def FixWidth(vals):
         itlen += 1
       if itlen > maxlen:
         # check whether one can expand to the next column
-        if not NextColumnDense(vals,icol) or not CanExtend(vals[irow],icol):
+        if not NextColumnDense(vals,icol,offsrow[irow]) or not CanExtend(vals[irow],icol,offsrow[irow]):
         #if not OnlyEntry(vals[irow],icol):
           maxlen = itlen
     fcol=[]

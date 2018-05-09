@@ -17,6 +17,7 @@ Input file `input.csv`:
     Here is a very long description for the following rows,,
     Row C,9.1,13.1415
     Here is a short description,,
+    Here is are two descriptions,,second
 
 after running `csvfwf.py input.csv > output.csv` the output file `output.csv` contains:
 
@@ -27,3 +28,4 @@ after running `csvfwf.py input.csv > output.csv` the output file `output.csv` co
     Here is a very long description for the following rows,,,
                  Row C,         9.1,    13.1415,
     Here is a short description,   ,           ,
+    Here is are two descriptions,  ,     second,
