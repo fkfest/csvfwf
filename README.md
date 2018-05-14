@@ -29,3 +29,16 @@ after running `csvfwf.py input.csv > output.csv` the output file `output.csv` co
                  Row C,         9.1,    13.1415,
     Here is a short description,   ,           ,
     Here are two descriptions,     ,     second,
+
+or after running `csvfwf.py -d "|" input.csv > output.csv` :
+
+    This is a test file for csvfwf||     |
+     First column, A| Second, B| Third, C|
+               Row A|     12.34|     56.7|
+               Row B|         8|    12.12|
+    Here is a very long description for the following rows|||
+               Row C|       9.1|  13.1415|
+    Here is a short description||        |
+    Here are two descriptions| |   second|
+
+
