@@ -66,12 +66,14 @@ def FixWidth(vals):
         vals[irow].append("")
       val=str(vals[irow][icol])
       val=val.strip()
+      quoted=False
       if delimiter in val:
         #add quotes
         val='"'+val+'"' 
+        quoted=True
       vals[irow][icol]=val
       itlen=len(val)+offsrow[irow]
-      if offsrow[irow] == 0:
+      if offsrow[irow] == 0 and not quoted:
         itlen += 1
       if itlen > maxlen:
         # check whether one can expand to the next column
