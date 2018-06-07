@@ -13,9 +13,13 @@ def GetTable(CSVFile):
   """read csv to a table"""
   table = []
   with open(CSVFile, newline='') as csvfile:
-    csvobj = csv.reader(csvfile)
+    csvobj = csv.reader(csvfile,delimiter=inpdelim)
     for row in csvobj:
       table.append(row)
+  # remove the last column if it's empty
+  lastcol = [row[-1] for row in table]
+  if all(not str(val).strip() for val in lastcol):
+    table = [row[:-1] for row in table]
   return table
 
 def OnlyEntry(row,icol):
@@ -27,7 +31,7 @@ def OnlyEntry(row,icol):
   return True
 
 def NextColumnDense(vals,icol,extlast):
-  """check if the next column is dense (e.g., >30% of elements non empty)"""
+  """check if the next column is dense (e.g., >20% of elements non empty)"""
   nval=0
   last=0
   for irow in range(len(vals)):
@@ -39,7 +43,7 @@ def NextColumnDense(vals,icol,extlast):
   if last == len(vals):
     return extlast
   else:
-    return (nval/len(vals)>0.3)
+    return (nval/len(vals)>0.2)
 
 def CanExtend(row,icol,extlast):
   """check if the next element in the row is empty"""
@@ -100,9 +104,14 @@ def PrintTable(table):
 ArgsLoop = iter(sys.argv[1:]) 
 for Arg in ArgsLoop:
   if Arg.startswith("-"):
-    if Arg.startswith("-d"): 
+    if Arg.startswith("-do"): 
+      # output delimiter
       Arg = next(ArgsLoop)
       delimiter = Arg
+    elif Arg.startswith("-di"): 
+      # input delimiter
+      Arg = next(ArgsLoop)
+      inpdelim = Arg
     else:
       print("option "+Arg+" not known") 
   else:

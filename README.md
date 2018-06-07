@@ -6,6 +6,10 @@ Usage:
 
     csvfwf.py <csv-file> > <csv-fwf-file>
 
+`-di` : define delimiter in the input file
+
+`-do` : define delimiter for the output
+
 Example:
 
 Input file `input.csv`:
@@ -30,7 +34,7 @@ after running `csvfwf.py input.csv > output.csv` the output file `output.csv` co
     Here is a short description,   ,           ,
     Here are two descriptions,     ,     second,
 
-or after running `csvfwf.py -d "|" input.csv > output.csv` :
+or after running `csvfwf.py -do "|" input.csv > output.csv` :
 
     This is a test file for csvfwf||     |
      First column, A| Second, B| Third, C|
