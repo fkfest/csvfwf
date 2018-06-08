@@ -8,6 +8,10 @@ import csv
 delimiter = ","
 #default delimiter for input files
 inpdelim = ","
+#smart alignment by default
+ALIGN = 0
+#compress the table again
+COMPRESS = False
 
 def GetTable(CSVFile):
   """read csv to a table"""
@@ -89,7 +93,18 @@ def FixWidth(vals):
         else:
           rowwidth = 0
         offsrow[irow] -= maxlen - rowwidth
-      fcol.append('{:>{}}'.format(vals[irow][icol],rowwidth))
+      alignright = True
+      if ALIGN is -1:
+        alignright = False
+      elif ALIGN is 0:
+        if vals[irow][icol].startswith('"') or vals[irow][icol].startswith('='):
+          alignright = False
+      if COMPRESS:
+        fcol.append(vals[irow][icol])
+      elif alignright:
+        fcol.append('{:>{}}'.format(vals[irow][icol],rowwidth))
+      else:
+        fcol.append('{:{}}'.format(vals[irow][icol],rowwidth))
       itlen = len(vals[irow][icol])
       if itlen > maxlen:
         offsrow[irow] = itlen - maxlen;
@@ -114,6 +129,15 @@ for Arg in ArgsLoop:
       # input delimiter
       Arg = next(ArgsLoop)
       inpdelim = Arg
+    elif Arg.startswith("-l"):
+      # align left
+      ALIGN = -1
+    elif Arg.startswith("-r"):
+      # align right
+      ALIGN = 1
+    elif Arg.startswith("-x"):
+      # make it ugly again
+      COMPRESS = True
     else:
       print("option "+Arg+" not known") 
   else:

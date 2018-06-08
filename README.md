@@ -10,6 +10,15 @@ Usage:
 
 `-do` : define delimiter for the output
 
+By default the alignment is set to be right unless the entry starts with `=` or `"` (otherwise some programs don't recognize the equations or text fields).
+It can be changed with following options:
+
+`-l` : align all entries left
+
+`-r` : align all entries right
+
+`-x` : compress the csv again, i.e., remove the fixed-format formating
+
 Example:
 
 Input file `input.csv`:
