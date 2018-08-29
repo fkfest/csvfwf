@@ -138,6 +138,16 @@ for Arg in ArgsLoop:
     elif Arg.startswith("-x"):
       # make it ugly again
       COMPRESS = True
+    elif Arg.startswith("-h"): 
+      print("Usage: csvfwf [OPTIONS] <input CSV file>")
+      print("Transform CSV files to fixed-width-format CSV. The output will go to the standard output.")
+      print("Options:")
+      print("-do:  output delimiter (default: comma)")
+      print("-di:  input delimiter (default: comma)")
+      print("-l:  align columns left")
+      print("-r:  align columns right")
+      print("-x:  remove fixed-width format")
+      print("-h:  display this help message")
     else:
       print("option "+Arg+" not known") 
   else:
