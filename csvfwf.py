@@ -114,8 +114,9 @@ def FixWidth(vals):
 
 def PrintTable(table):
   for irow in range(len(table)):
-    for icol in range(len(table[0])):
-      print(table[irow][icol],delimiter,end="",sep="")
+    if not all('' == s or s.isspace() for s in table[irow][:]):
+      for icol in range(len(table[0])):
+        print(table[irow][icol],delimiter,end="",sep="")
     print()
 
 ArgsLoop = iter(sys.argv[1:]) 
