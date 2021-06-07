@@ -12,19 +12,38 @@ inpdelim = ","
 ALIGN = 0
 #compress the table again
 COMPRESS = False
+#number of empty rows, which seperate mulitple tables
+TABLESEP = 2
+
+def RemoveEmptyLastColumn(table):
+  """remove the last column if it's empty"""
+  lastcol = [row[-1] for row in table]
+  if all(not str(val).strip() for val in lastcol):
+    return [row[:-1] for row in table]
+  return table
 
 def GetTable(CSVFile):
   """read csv to a table"""
+  tables = []
   table = []
+  nempty = 0
   with open(CSVFile, newline='') as csvfile:
     csvobj = csv.reader(csvfile,delimiter=inpdelim)
     for row in csvobj:
+      empty_row = all(not str(val).strip() for val in row)
+      if empty_row:
+        nempty += 1
+        if len(row) == 0:
+          row.append("")
+      if nempty >= TABLESEP and not empty_row:
+        # next table
+        tables.append(RemoveEmptyLastColumn(table))
+        nempty = 0
+        table = []
       table.append(row)
-  # remove the last column if it's empty
-  lastcol = [row[-1] for row in table]
-  if all(not str(val).strip() for val in lastcol):
-    table = [row[:-1] for row in table]
-  return table
+  if table:
+    tables.append(RemoveEmptyLastColumn(table)) 
+  return tables
 
 def OnlyEntry(row,icol):
   """check, if it's the only entry in the row"""
@@ -139,6 +158,10 @@ for Arg in ArgsLoop:
     elif Arg.startswith("-x"):
       # make it ugly again
       COMPRESS = True
+    elif Arg.startswith("-s"):
+      # different tables separated by that many rows
+      Arg = next(ArgsLoop)
+      TABLESEP = int(Arg)
     elif Arg.startswith("-h"): 
       print("Usage: csvfwf [OPTIONS] <input CSV file>")
       print("Transform CSV files to fixed-width-format CSV. The output will go to the standard output.")
@@ -148,12 +171,14 @@ for Arg in ArgsLoop:
       print("-l:  align columns left")
       print("-r:  align columns right")
       print("-x:  remove fixed-width format")
+      print("-s:  number of empty rows separating tables (default:",TABLESEP,")")
       print("-h:  display this help message")
     else:
       print("option "+Arg+" not known") 
   else:
     CSVFile = Arg
-    table = GetTable(CSVFile)
-    table = FixWidth(table)
-    PrintTable(table)
+    tables = GetTable(CSVFile)
+    for table in tables:
+      table = FixWidth(table)
+      PrintTable(table)
 
