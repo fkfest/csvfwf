@@ -81,7 +81,8 @@ def FixWidth(vals):
   """generate a table with fixed width columns"""
   table1 = []
   offsrow = [0] * len(vals)
-  for icol in range(len(vals[0])):
+  ncols = max([len(vals[irow]) for irow in range(len(vals))])
+  for icol in range(ncols):
     #find the optimal width for each column
     maxlen=0
     for irow in range(len(vals)):
