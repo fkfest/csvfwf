@@ -82,6 +82,9 @@ def FixWidth(vals):
   table1 = []
   offsrow = [0] * len(vals)
   ncols = max([len(vals[irow]) for irow in range(len(vals))])
+  if ncols == 0:
+    # only empty rows
+    return vals
   for icol in range(ncols):
     #find the optimal width for each column
     maxlen=0
