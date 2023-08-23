@@ -117,9 +117,9 @@ def FixWidth(vals):
           rowwidth = 0
         offsrow[irow] -= maxlen - rowwidth
       alignright = True
-      if ALIGN is -1:
+      if ALIGN == -1:
         alignright = False
-      elif ALIGN is 0:
+      elif ALIGN == 0:
         if vals[irow][icol].startswith('"') or vals[irow][icol].startswith('='):
           alignright = False
       if COMPRESS:
