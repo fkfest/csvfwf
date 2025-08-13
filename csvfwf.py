@@ -188,12 +188,14 @@ for Arg in ArgsLoop:
   else:
     CSVFile = Arg
     tables = GetTable(CSVFile)
+    if INPLACE == True:
+      file = open(CSVFile, "w")
     for table in tables:
       table = FixWidth(table)
       if INPLACE == True:
-        file = open(CSVFile, "w")
         PrintTable(table, file)
-        file.close()
       else:
         PrintTable(table)
+    if INPLACE == True:
+        file.close()
 
