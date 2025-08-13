@@ -14,6 +14,8 @@ ALIGN = 0
 COMPRESS = False
 #number of empty rows, which seperate mulitple tables
 TABLESEP = 2
+#print in place
+INPLACE = False
 
 def RemoveEmptyLastColumn(table):
   """remove the last column if it's empty"""
@@ -135,12 +137,12 @@ def FixWidth(vals):
   #transpose the table
   return [list(i) for i in zip(*table1)]
 
-def PrintTable(table):
+def PrintTable(table, file=sys.stdout):
   for irow in range(len(table)):
     if not all('' == s or s.isspace() for s in table[irow][:]):
       for icol in range(len(table[0])):
-        print(table[irow][icol],delimiter,end="",sep="")
-    print()
+        print(table[irow][icol],delimiter,end="",sep="",file=file)
+    print(file=file)
 
 ArgsLoop = iter(sys.argv[1:]) 
 for Arg in ArgsLoop:
@@ -162,6 +164,9 @@ for Arg in ArgsLoop:
     elif Arg.startswith("-x"):
       # make it ugly again
       COMPRESS = True
+    elif Arg.startswith("-i"):
+      # print in place
+      INPLACE = True
     elif Arg.startswith("-s"):
       # different tables separated by that many rows
       Arg = next(ArgsLoop)
@@ -175,6 +180,7 @@ for Arg in ArgsLoop:
       print("-l:  align columns left")
       print("-r:  align columns right")
       print("-x:  remove fixed-width format")
+      print("-i:  print in place")
       print("-s:  number of empty rows separating tables (default:",TABLESEP,")")
       print("-h:  display this help message")
     else:
@@ -182,7 +188,14 @@ for Arg in ArgsLoop:
   else:
     CSVFile = Arg
     tables = GetTable(CSVFile)
+    if INPLACE == True:
+      file = open(CSVFile, "w")
     for table in tables:
       table = FixWidth(table)
-      PrintTable(table)
+      if INPLACE == True:
+        PrintTable(table, file)
+      else:
+        PrintTable(table)
+    if INPLACE == True:
+        file.close()
 
